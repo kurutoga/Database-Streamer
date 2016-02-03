@@ -1,0 +1,51 @@
+{% macro render_field(field, placeholder=None) %}
+{% if field.errors %}
+<div>
+{% elif field.flags.error %}
+<div>
+{% else %}
+<div>
+{% endif %}
+    {% set css_class = 'form-control ' + kwargs.pop('class', '') %}
+    {{ field(class=css_class, placeholder=placeholder, **kwargs) }}
+</div>
+{% endmacro %}
+
+<div>
+  <div>
+    {% with errors = get_flashed_messages(category_filter=["error"]) %}
+    {% if errors %}
+    <div>
+    {% for error in errors %}
+    {{ error }}<br>
+    {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div id="sess">
+	<h1> Welcome, {{session['table']}} </h1>
+	<br><br>
+    </div>
+
+    {% if form.errors %}
+    <div>
+    {% for field, error in form.errors.items() %}
+    {% for e in error %}
+    {{ e }}<br>
+    {% endfor %}
+    {% endfor %}
+    </div>
+    {% endif %}
+    <form method="POST" action="./download" accept-charset="UTF-8" role="form">
+      {{ form.csrf_token }}
+      {{ render_field(form.startDate, placeholder="From Date",
+                                  autofocus="") }}
+      {{ render_field(form.endDate, placeholder="To Date") }}
+      <button type="submit" name="submit">Download!</button>
+    </form>  
+    <form method="POST" action="/logout" accept-charset="UTF-8" role="form">
+      <button type="submit" name="LOGOUT">Log Out!!</button>
+    </form>  
+ </div>
+</div>
